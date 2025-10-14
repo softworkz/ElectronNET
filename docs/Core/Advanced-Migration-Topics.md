@@ -17,47 +17,48 @@ if the asp web port needs to be specified manually, this can be by setting it vi
   </ItemGroup>
 
 
-// 2. ElectronHostHook
+## Custom ElectronHostHook Configuration
 
+### TypeScript and Node.js Updates
 
-Users who have a custom ElectronHostHook in their project, need to do the following:
-
-
-In their ElectronHostHook\package.json, they need to set typescript to 5.9.3 or later. If @types/node is presnt, it must be 22.x
-
+**Update package.json:**
+```json
+{
   "devDependencies": {
     "eslint": "^9.37.0",
-   "@types/node": "^22.18",
-   "typescript": "^5.9.3"
+    "@types/node": "^22.18",
+    "typescript": "^5.9.3"
   },
-    "dependencies": {
+  "dependencies": {
     "archiver-utils": "^2.1.0",
     "socket.io": "^4.8.1",
     "exceljs": "^1.10.0"
-    }
+  }
 }
+```
 
-Next step is to edit the project file and add a reference like this
+**Update Project File:**
+```xml
+<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.9.3" />
 
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.9.3" />
+<PropertyGroup>
+  <TypeScriptModuleKind>commonjs</TypeScriptModuleKind>
+  <TypeScriptUseNodeJS>true</TypeScriptUseNodeJS>
+  <TypeScriptTSConfig>ElectronHostHook/tsconfig.json</TypeScriptTSConfig>
+</PropertyGroup>
 
-then the following propertygroup:
+<ItemGroup>
+  <Compile Remove="publish\**" />
+  <Content Remove="publish\**" />
+  <EmbeddedResource Remove="publish\**" />
+  <None Remove="publish\**" />
+  <TypeScriptCompile Remove="**\node_modules\**" />
+</ItemGroup>
+```
 
-  <PropertyGroup>
-    <TypeScriptModuleKind>commonjs</TypeScriptModuleKind>
-    <TypeScriptUseNodeJS>true</TypeScriptUseNodeJS>
-    <TypeScriptTSConfig>ElectronHostHook/tsconfig.json</TypeScriptTSConfig>
-  </PropertyGroup>
+### Integration Benefits
 
-
-and this itemgroup:
-
-  <ItemGroup>
-    <Compile Remove="publish\**" />
-    <Content Remove="publish\**" />
-    <EmbeddedResource Remove="publish\**" />
-    <None Remove="publish\**" />
-    <TypeScriptCompile Remove="**\node_modules\**" />
-  </ItemGroup>
-
-
+- **Modern TypeScript** - Latest language features and better type checking
+- **Updated Node.js Types** - Compatibility with Node.js 22.x APIs
+- **ESLint Integration** - Better code quality and consistency
+- **MSBuild Compilation** - Integrated with Visual Studio build process
