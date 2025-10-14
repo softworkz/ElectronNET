@@ -57,6 +57,8 @@ You can also manually edit `electron-builder.json`:
     "icon": "assets/app.ico"
   }
 }
+```
+
 ## 🎯 Testing Migration
 
 After completing the migration steps:
