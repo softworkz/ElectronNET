@@ -22,7 +22,6 @@
 
 #  Release Information
 
-- [Package Description](Releases/Package-Description.md)
-- [Changelog](../Changelog.md)
-
+- [Package Description](RelInfo/Package-Description.md)
+- [Changelog](RelInfo/Changelog.md)
 
