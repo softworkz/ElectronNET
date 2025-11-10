@@ -12,8 +12,11 @@ namespace ElectronNET.API;
 /// <summary>
 /// Render and control web pages.
 /// </summary>
-public class WebContents
+public class WebContents: ApiBase
 {
+    protected override SocketTaskEventNameTypes SocketTaskEventNameType => SocketTaskEventNameTypes.DashesLowerFirst;
+    protected override SocketEventNameTypes SocketEventNameType => SocketEventNameTypes.CamelCase;
+
     /// <summary>
     /// Gets the identifier.
     /// </summary>
@@ -32,11 +35,9 @@ public class WebContents
     /// </summary>
     public event Action<bool> OnCrashed
     {
-        add => ApiEventManager.AddEvent("webContents-crashed", Id, _crashed, value, (args) => args.GetBoolean());
-        remove => ApiEventManager.RemoveEvent("webContents-crashed", Id, _crashed, value);
+        add => AddEvent(value, Id);
+        remove => RemoveEvent(value, Id);
     }
-
-    private event Action<bool> _crashed;
 
     /// <summary>
     /// Emitted when the navigation is done, i.e. the spinner of the tab has
@@ -44,22 +45,18 @@ public class WebContents
     /// </summary>
     public event Action OnDidFinishLoad
     {
-        add => ApiEventManager.AddEvent("webContents-didFinishLoad", Id, _didFinishLoad, value);
-        remove => ApiEventManager.RemoveEvent("webContents-didFinishLoad", Id, _didFinishLoad, value);
+        add => AddEvent(value, Id);
+        remove => RemoveEvent(value, Id);
     }
-
-    private event Action _didFinishLoad;
 
     /// <summary>
     /// Emitted when any frame (including main) starts navigating.
     /// </summary>
     public event Action<string> OnDidStartNavigation
     {
-        add => ApiEventManager.AddEvent("webContents-didStartNavigation", Id, _didStartNavigation, value);
-        remove => ApiEventManager.RemoveEvent("webContents-didStartNavigation", Id, _didStartNavigation, value);
+        add => AddEvent(value, Id);
+        remove => RemoveEvent(value, Id);
     }
-
-    private event Action<string> _didStartNavigation;
 
     /// <summary>
     /// Emitted when a main frame navigation is done.
@@ -67,11 +64,9 @@ public class WebContents
     /// </summary>
     public event Action<OnDidNavigateInfo> OnDidNavigate
     {
-        add => ApiEventManager.AddEvent("webContents-didNavigate", Id, _didNavigate, value);
-        remove => ApiEventManager.RemoveEvent("webContents-didNavigate", Id, _didNavigate, value);
+        add => AddEvent(value, Id);
+        remove => RemoveEvent(value, Id);
     }
-
-    private event Action<OnDidNavigateInfo> _didNavigate;
 
     /// <summary>
     /// Emitted when a server side redirect occurs during navigation. For example a 302 redirect.
@@ -79,55 +74,45 @@ public class WebContents
     /// </summary>
     public event Action<string> OnWillRedirect
     {
-        add => ApiEventManager.AddEvent("webContents-willRedirect", Id, _willRedirect, value);
-        remove => ApiEventManager.RemoveEvent("webContents-willRedirect", Id, _willRedirect, value);
+        add => AddEvent(value, Id);
+        remove => RemoveEvent(value, Id);
     }
-
-    private event Action<string> _willRedirect;
 
     /// <summary>
     /// Emitted after a server side redirect occurs during navigation. For example a 302 redirect.
     /// </summary>
     public event Action<string> OnDidRedirectNavigation
     {
-        add => ApiEventManager.AddEvent("webContents-didRedirectNavigation", Id, _didRedirectNavigation, value);
-        remove => ApiEventManager.RemoveEvent("webContents-didRedirectNavigation", Id, _didRedirectNavigation, value);
+        add => AddEvent(value, Id);
+        remove => RemoveEvent(value, Id);
     }
-
-    private event Action<string> _didRedirectNavigation;
 
     /// <summary>
     /// This event is like OnDidFinishLoad but emitted when the load failed.
     /// </summary>
     public event Action<OnDidFailLoadInfo> OnDidFailLoad
     {
-        add => ApiEventManager.AddEvent("webContents-didFailLoad", Id, _didFailLoad, value, (args) => args.Deserialize<OnDidFailLoadInfo>(ElectronJson.Options));
-        remove => ApiEventManager.RemoveEvent("webContents-didFailLoad", Id, _didFailLoad, value);
+        add => AddEvent(value, Id);
+        remove => RemoveEvent(value, Id);
     }
-
-    private event Action<OnDidFailLoadInfo> _didFailLoad;
 
     /// <summary>
     /// Emitted when an input event is sent to the WebContents.
     /// </summary>
     public event Action<InputEvent> InputEvent
     {
-        add => ApiEventManager.AddEvent("webContents-input-event", Id, _inputEvent, value, (args) => args.Deserialize<InputEvent>(ElectronJson.Options));
-        remove => ApiEventManager.RemoveEvent("webContents-input-event", Id, _inputEvent, value);
+        add => AddEvent(value, Id);
+        remove => RemoveEvent(value, Id);
     }
-
-    private event Action<InputEvent> _inputEvent;
 
     /// <summary>
     /// Emitted when the document in the top-level frame is loaded.
     /// </summary>
     public event Action OnDomReady
     {
-        add => ApiEventManager.AddEvent("webContents-domReady", Id, _domReady, value);
-        remove => ApiEventManager.RemoveEvent("webContents-domReady", Id, _domReady, value);
+        add => AddEvent(value, Id);
+        remove => RemoveEvent(value, Id);
     }
-
-    private event Action _domReady;
 
     internal WebContents(int id)
     {

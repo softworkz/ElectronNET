@@ -1,9 +1,7 @@
 using ElectronNET.API.Entities;
 using ElectronNET.API.Serialization;
-using ElectronNET.Common;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 // ReSharper disable InconsistentNaming
@@ -13,8 +11,11 @@ namespace ElectronNET.API
     /// <summary>
     /// Enable apps to automatically update themselves. Based on electron-updater.
     /// </summary>
-    public sealed class AutoUpdater
+    public sealed class AutoUpdater: ApiBase
     {
+        protected override SocketTaskEventNameTypes SocketTaskEventNameType => SocketTaskEventNameTypes.NoDashUpperFirst;
+        protected override SocketEventNameTypes SocketEventNameType => SocketEventNameTypes.DashedLower;
+
         /// <summary>
         /// Whether to automatically download an update when it is found. (Default is true)
         /// </summary>
@@ -245,22 +246,18 @@ namespace ElectronNET.API
         /// </summary>
         public event Action<string> OnError
         {
-            add => ApiEventManager.AddEvent("autoUpdater-error", GetHashCode(), _error, value, (args) => args.ToString());
-            remove => ApiEventManager.RemoveEvent("autoUpdater-error", GetHashCode(), _error, value);
+            add => AddEvent(value, GetHashCode());
+            remove => RemoveEvent(value, GetHashCode());
         }
-
-        private event Action<string> _error;
 
         /// <summary>
         /// Emitted when checking if an update has started.
         /// </summary>
         public event Action OnCheckingForUpdate
         {
-            add => ApiEventManager.AddEvent("autoUpdater-checking-for-update", GetHashCode(), _checkingForUpdate, value);
-            remove => ApiEventManager.RemoveEvent("autoUpdater-checking-for-update", GetHashCode(), _checkingForUpdate, value);
+            add => AddEvent(value, GetHashCode());
+            remove => RemoveEvent(value, GetHashCode());
         }
-
-        private event Action _checkingForUpdate;
 
         /// <summary>
         /// Emitted when there is an available update. 
@@ -268,44 +265,36 @@ namespace ElectronNET.API
         /// </summary>
         public event Action<UpdateInfo> OnUpdateAvailable
         {
-            add => ApiEventManager.AddEvent("autoUpdater-update-available", GetHashCode(), _updateAvailable, value, (args) => args.Deserialize(ElectronJsonContext.Default.UpdateInfo));
-            remove => ApiEventManager.RemoveEvent("autoUpdater-update-available", GetHashCode(), _updateAvailable, value);
+            add => AddEvent(value, GetHashCode());
+            remove => RemoveEvent(value, GetHashCode());
         }
-
-        private event Action<UpdateInfo> _updateAvailable;
 
         /// <summary>
         /// Emitted when there is no available update.
         /// </summary>
         public event Action<UpdateInfo> OnUpdateNotAvailable
         {
-            add => ApiEventManager.AddEvent("autoUpdater-update-not-available", GetHashCode(), _updateNotAvailable, value, (args) => args.Deserialize(ElectronJsonContext.Default.UpdateInfo));
-            remove => ApiEventManager.RemoveEvent("autoUpdater-update-not-available", GetHashCode(), _updateNotAvailable, value);
+            add => AddEvent(value, GetHashCode());
+            remove => RemoveEvent(value, GetHashCode());
         }
-
-        private event Action<UpdateInfo> _updateNotAvailable;
 
         /// <summary>
         /// Emitted on download progress.
         /// </summary>
         public event Action<ProgressInfo> OnDownloadProgress
         {
-            add => ApiEventManager.AddEvent("autoUpdater-download-progress", GetHashCode(), _downloadProgress, value, (args) => args.Deserialize(ElectronJsonContext.Default.ProgressInfo));
-            remove => ApiEventManager.RemoveEvent("autoUpdater-download-progress", GetHashCode(), _downloadProgress, value);
+            add => AddEvent(value, GetHashCode());
+            remove => RemoveEvent(value, GetHashCode());
         }
-
-        private event Action<ProgressInfo> _downloadProgress;
 
         /// <summary>
         /// Emitted on download complete.
         /// </summary>
         public event Action<UpdateInfo> OnUpdateDownloaded
         {
-            add => ApiEventManager.AddEvent("autoUpdater-update-downloaded", GetHashCode(), _updateDownloaded, value, (args) => args.Deserialize(ElectronJsonContext.Default.UpdateInfo));
-            remove => ApiEventManager.RemoveEvent("autoUpdater-update-downloaded", GetHashCode(), _updateDownloaded, value);
+            add => AddEvent(value, GetHashCode());
+            remove => RemoveEvent(value, GetHashCode());
         }
-
-        private event Action<UpdateInfo> _updateDownloaded;
 
         private static AutoUpdater _autoUpdater;
         private static object _syncRoot = new object();
