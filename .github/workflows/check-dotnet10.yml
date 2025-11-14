@@ -11,6 +11,8 @@ on:
 jobs:
   check-dotnet10-ubuntu:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
     - name: Check pre-installed .NET versions
