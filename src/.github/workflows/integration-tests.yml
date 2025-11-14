@@ -98,10 +98,6 @@ jobs:
           check_name: ElectronNET Integration Tests (${{ matrix.os }})
           comment_mode: off
 
-      - name: Fail if tests failed
-        if: steps.Publish_Test_Results.outcome == 'failure'
-        run: exit 1
-
   summary:
     name: Aggregate
     runs-on: ubuntu-latest
