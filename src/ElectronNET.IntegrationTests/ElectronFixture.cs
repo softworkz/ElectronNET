@@ -13,11 +13,11 @@ namespace ElectronNET.IntegrationTests
         {
             try
             {
-                ElectronNetRuntime.ElectronExtraArguments = "--no-sandbox";
                 Console.Error.WriteLine("[ElectronFixture] InitializeAsync: start");
                 AppDomain.CurrentDomain.SetData("ElectronTestAssembly", Assembly.GetExecutingAssembly());
                 Console.Error.WriteLine("[ElectronFixture] Acquire RuntimeController");
                 var runtimeController = ElectronNetRuntime.RuntimeController;
+                ElectronNetRuntime.ElectronExtraArguments = "--no-sandbox";
                 Console.Error.WriteLine("[ElectronFixture] Starting Electron runtime...");
                 await runtimeController.Start();
                 Console.Error.WriteLine("[ElectronFixture] Waiting for Ready...");
