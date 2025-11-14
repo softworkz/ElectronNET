@@ -1,0 +1,349 @@
+Event: 'open-file' _macOS_
+Event: 'open-url' _macOS_
+Event: 'activate' _macOS_
+Event: 'did-become-active' _macOS_
+Event: 'did-resign-active' _macOS_
+Event: 'continue-activity' _macOS_
+Event: 'will-continue-activity' _macOS_
+Event: 'continue-activity-error' _macOS_
+Event: 'activity-was-continued' _macOS_
+Event: 'update-activity-state' _macOS_
+Event: 'new-window-for-tab' _macOS_
+Event: 'accessibility-support-changed' _macOS_ _Windows_
+`app.hide()` _macOS_
+`app.isHidden()` _macOS_
+`app.show()` _macOS_
+`app.addRecentDocument(path)` _macOS_ _Windows_
+`app.clearRecentDocuments()` _macOS_ _Windows_
+`app.getRecentDocuments()` _macOS_ _Windows_
+`app.removeAsDefaultProtocolClient(protocol[, path, args])` _macOS_ _Windows_
+`app.getApplicationInfoForProtocol(url)` _macOS_ _Windows_
+`app.setUserTasks(tasks)` _Windows_
+`app.getJumpListSettings()` _Windows_
+`app.setJumpList(categories)` _Windows_
+`app.setUserActivity(type, userInfo[, webpageURL])` _macOS_
+`app.getCurrentActivityType()` _macOS_
+`app.invalidateCurrentActivity()` _macOS_
+`app.resignCurrentActivity()` _macOS_
+`app.updateCurrentActivity(type, userInfo)` _macOS_
+`app.setAppUserModelId(id)` _Windows_
+`app.setActivationPolicy(policy)` _macOS_
+`app.importCertificate(options, callback)` _Linux_
+`app.setBadgeCount([count])` _Linux_ _macOS_
+`app.getBadgeCount()` _Linux_ _macOS_
+`app.isUnityRunning()` _Linux_
+`app.getLoginItemSettings([options])` _macOS_ _Windows_
+`app.setLoginItemSettings(settings)` _macOS_ _Windows_
+`app.isAccessibilitySupportEnabled()` _macOS_ _Windows_
+`app.setAccessibilitySupportEnabled(enabled)` _macOS_ _Windows_
+`app.getAccessibilitySupportFeatures()` _macOS_ _Windows_
+`app.setAccessibilitySupportFeatures(features)` _macOS_ _Windows_
+`app.showEmojiPanel()` _macOS_ _Windows_
+`app.isInApplicationsFolder()` _macOS_
+`app.moveToApplicationsFolder([options])` _macOS_
+`app.isSecureKeyboardEntryEnabled()` _macOS_
+`app.setSecureKeyboardEntryEnabled(enabled)` _macOS_
+`app.setClientCertRequestPasswordHandler(handler)`  _Linux_
+`app.accessibilitySupportEnabled` _macOS_ _Windows_
+`app.badgeCount` _Linux_ _macOS_
+`app.dock` _macOS_ _Readonly_
+`app.runningUnderARM64Translation` _Readonly_ _macOS_ _Windows_
+Event: 'query-session-end' _Windows_
+Event: 'session-end' _Windows_
+Event: 'will-resize' _macOS_ _Windows_
+Event: 'resized' _macOS_ _Windows_
+Event: 'will-move' _macOS_ _Windows_
+Event: 'moved' _macOS_ _Windows_
+Event: 'app-command' _Windows_ _Linux_
+Event: 'swipe' _macOS_
+Event: 'rotate-gesture' _macOS_
+Event: 'sheet-begin' _macOS_
+Event: 'sheet-end' _macOS_
+Event: 'new-window-for-tab' _macOS_
+Event: 'system-context-menu' _Windows_ _Linux_
+`win.tabbingIdentifier` _macOS_ _Readonly_
+`win.autoHideMenuBar` _Linux_ _Windows_
+`win.focusable` _Windows_ _macOS_
+`win.visibleOnAllWorkspaces` _macOS_ _Linux_
+`win.menuBarVisible` _Windows_ _Linux_
+`win.documentEdited` _macOS_
+`win.representedFilename` _macOS_
+`win.minimizable` _macOS_ _Windows_
+`win.maximizable` _macOS_ _Windows_
+`win.closable` _macOS_ _Windows_
+`win.movable` _macOS_ _Windows_
+`win.excludedFromShownWindowsMenu` _macOS_
+`win.snapped` _Windows_ _Readonly_
+`win.setSimpleFullScreen(flag)` _macOS_
+`win.isSimpleFullScreen()` _macOS_
+`win.previewFile(path[, displayName])` _macOS_
+`win.closeFilePreview()` _macOS_
+`win.setMovable(movable)` _macOS_ _Windows_
+`win.isMovable()` _macOS_ _Windows_
+`win.setMinimizable(minimizable)` _macOS_ _Windows_
+`win.isMinimizable()` _macOS_ _Windows_
+`win.setMaximizable(maximizable)` _macOS_ _Windows_
+`win.isMaximizable()` _macOS_ _Windows_
+`win.setClosable(closable)` _macOS_ _Windows_
+`win.isClosable()` _macOS_ _Windows_
+`win.setHiddenInMissionControl(hidden)` _macOS_
+`win.isHiddenInMissionControl()` _macOS_
+`win.setSheetOffset(offsetY[, offsetX])` _macOS_
+`win.setSkipTaskbar(skip)` _macOS_ _Windows_
+`win.isTabletMode()` _Windows_
+`win.hookWindowMessage(message, callback)` _Windows_
+`win.isWindowMessageHooked(message)` _Windows_
+`win.unhookWindowMessage(message)` _Windows_
+`win.unhookAllWindowMessages()` _Windows_
+`win.setRepresentedFilename(filename)` _macOS_
+`win.getRepresentedFilename()` _macOS_
+`win.setDocumentEdited(edited)` _macOS_
+`win.isDocumentEdited()` _macOS_
+`win.setMenu(menu)` _Linux_ _Windows_
+`win.removeMenu()` _Linux_ _Windows_
+`win.setOverlayIcon(overlay, description)` _Windows_
+`win.invalidateShadow()` _macOS_
+`win.setOpacity(opacity)` _Windows_ _macOS_
+`win.setShape(rects)` _Windows_ _Linux_ _Experimental_
+`win.setThumbarButtons(buttons)` _Windows_
+`win.setThumbnailClip(region)` _Windows_
+`win.setThumbnailToolTip(toolTip)` _Windows_
+`win.setAppDetails(options)` _Windows_
+`win.setAccentColor(accentColor)` _Windows_
+`win.getAccentColor()` _Windows_
+`win.setIcon(icon)` _Windows_ _Linux_
+`win.setWindowButtonVisibility(visible)` _macOS_
+`win.setAutoHideMenuBar(hide)` _Windows_ _Linux_
+`win.isMenuBarAutoHide()` _Windows_ _Linux_
+`win.setMenuBarVisibility(visible)` _Windows_ _Linux_
+`win.isMenuBarVisible()` _Windows_ _Linux_
+`win.isSnapped()` _Windows_
+`win.setVisibleOnAllWorkspaces(visible[, options])` _macOS_ _Linux_
+`win.isVisibleOnAllWorkspaces()` _macOS_ _Linux_
+`win.setContentProtection(enable)` _macOS_ _Windows_
+`win.isContentProtected()` _macOS_ _Windows_
+`win.setFocusable(focusable)` _macOS_ _Windows_
+`win.isFocusable()` _macOS_ _Windows_
+`win.setAutoHideCursor(autoHide)` _macOS_
+`win.selectPreviousTab()` _macOS_
+`win.selectNextTab()` _macOS_
+`win.showAllTabs()` _macOS_
+`win.mergeAllWindows()` _macOS_
+`win.moveTabToNewWindow()` _macOS_
+`win.toggleTabBar()` _macOS_
+`win.addTabbedWindow(baseWindow)` _macOS_
+`win.setVibrancy(type)` _macOS_
+`win.setBackgroundMaterial(material)` _Windows_
+`win.setWindowButtonPosition(position)` _macOS_
+`win.getWindowButtonPosition()` _macOS_
+`win.setTouchBar(touchBar)` _macOS_
+`win.setTitleBarOverlay(options)` _Windows_ _Linux_
+Event: 'query-session-end' _Windows_
+Event: 'session-end' _Windows_
+Event: 'will-resize' _macOS_ _Windows_
+Event: 'resized' _macOS_ _Windows_
+Event: 'will-move' _macOS_ _Windows_
+Event: 'moved' _macOS_ _Windows_
+Event: 'app-command' _Windows_ _Linux_
+Event: 'swipe' _macOS_
+Event: 'rotate-gesture' _macOS_
+Event: 'sheet-begin' _macOS_
+Event: 'sheet-end' _macOS_
+Event: 'new-window-for-tab' _macOS_
+Event: 'system-context-menu' _Windows_ _Linux_
+`win.tabbingIdentifier` _macOS_ _Readonly_
+`win.autoHideMenuBar` _Linux_ _Windows_
+`win.focusable` _Windows_ _macOS_
+`win.visibleOnAllWorkspaces` _macOS_ _Linux_
+`win.menuBarVisible` _Windows_ _Linux_
+`win.documentEdited` _macOS_
+`win.representedFilename` _macOS_
+`win.minimizable` _macOS_ _Windows_
+`win.maximizable` _macOS_ _Windows_
+`win.closable` _macOS_ _Windows_
+`win.movable` _macOS_ _Windows_
+`win.excludedFromShownWindowsMenu` _macOS_
+`win.snapped` _Windows_ _Readonly_
+`win.setSimpleFullScreen(flag)` _macOS_
+`win.isSimpleFullScreen()` _macOS_
+`win.previewFile(path[, displayName])` _macOS_
+`win.closeFilePreview()` _macOS_
+`win.setMovable(movable)` _macOS_ _Windows_
+`win.isMovable()` _macOS_ _Windows_
+`win.setMinimizable(minimizable)` _macOS_ _Windows_
+`win.isMinimizable()` _macOS_ _Windows_
+`win.setMaximizable(maximizable)` _macOS_ _Windows_
+`win.isMaximizable()` _macOS_ _Windows_
+`win.setClosable(closable)` _macOS_ _Windows_
+`win.isClosable()` _macOS_ _Windows_
+`win.setHiddenInMissionControl(hidden)` _macOS_
+`win.isHiddenInMissionControl()` _macOS_
+`win.setSheetOffset(offsetY[, offsetX])` _macOS_
+`win.setSkipTaskbar(skip)` _macOS_ _Windows_
+`win.isTabletMode()` _Windows_
+`win.hookWindowMessage(message, callback)` _Windows_
+`win.isWindowMessageHooked(message)` _Windows_
+`win.unhookWindowMessage(message)` _Windows_
+`win.unhookAllWindowMessages()` _Windows_
+`win.setRepresentedFilename(filename)` _macOS_
+`win.getRepresentedFilename()` _macOS_
+`win.setDocumentEdited(edited)` _macOS_
+`win.isDocumentEdited()` _macOS_
+`win.setMenu(menu)` _Linux_ _Windows_
+`win.removeMenu()` _Linux_ _Windows_
+`win.setOverlayIcon(overlay, description)` _Windows_
+`win.invalidateShadow()` _macOS_
+`win.setOpacity(opacity)` _Windows_ _macOS_
+`win.setShape(rects)` _Windows_ _Linux_ _Experimental_
+`win.setThumbarButtons(buttons)` _Windows_
+`win.setThumbnailClip(region)` _Windows_
+`win.setThumbnailToolTip(toolTip)` _Windows_
+`win.setAppDetails(options)` _Windows_
+`win.setAccentColor(accentColor)` _Windows_
+`win.getAccentColor()` _Windows_
+`win.showDefinitionForSelection()` _macOS_
+`win.setIcon(icon)` _Windows_ _Linux_
+`win.setWindowButtonVisibility(visible)` _macOS_
+`win.setAutoHideMenuBar(hide)` _Windows_ _Linux_
+`win.isMenuBarAutoHide()` _Windows_ _Linux_
+`win.setMenuBarVisibility(visible)` _Windows_ _Linux_
+`win.isMenuBarVisible()` _Windows_ _Linux_
+`win.isSnapped()` _Windows_
+`win.setVisibleOnAllWorkspaces(visible[, options])` _macOS_ _Linux_
+`win.isVisibleOnAllWorkspaces()` _macOS_ _Linux_
+`win.setContentProtection(enable)` _macOS_ _Windows_
+`win.isContentProtected()` _macOS_ _Windows_
+`win.setFocusable(focusable)` _macOS_ _Windows_
+`win.isFocusable()` _macOS_ _Windows_
+`win.setAutoHideCursor(autoHide)` _macOS_
+`win.selectPreviousTab()` _macOS_
+`win.selectNextTab()` _macOS_
+`win.showAllTabs()` _macOS_
+`win.mergeAllWindows()` _macOS_
+`win.moveTabToNewWindow()` _macOS_
+`win.toggleTabBar()` _macOS_
+`win.addTabbedWindow(browserWindow)` _macOS_
+`win.setVibrancy(type[, options])` _macOS_
+`win.setBackgroundMaterial(material)` _Windows_
+`win.setWindowButtonPosition(position)` _macOS_
+`win.getWindowButtonPosition()` _macOS_
+`win.setTouchBar(touchBar)` _macOS_
+`win.setTitleBarOverlay(options)` _Windows_ _Linux_
+`clipboard.readBookmark()` _macOS_ _Windows_
+`clipboard.writeBookmark(title, url[, type])` _macOS_ _Windows_
+`clipboard.readFindText()` _macOS_
+`clipboard.writeFindText(text)` _macOS_
+--disable-geolocation _macOS_
+`dialog.showCertificateTrustDialog([window, ]options)` _macOS_ _Windows_
+`dock.bounce([type])` _macOS_
+`dock.cancelBounce(id)` _macOS_
+`dock.downloadFinished(filePath)` _macOS_
+`dock.setBadge(text)` _macOS_
+`dock.getBadge()` _macOS_
+`dock.hide()` _macOS_
+`dock.show()` _macOS_
+`dock.isVisible()` _macOS_
+`dock.setMenu(menu)` _macOS_
+`dock.getMenu()` _macOS_
+`dock.setIcon(image)` _macOS_
+`ELECTRON_NO_ATTACH_CONSOLE` _Windows_
+`ELECTRON_FORCE_WINDOW_MENU_BAR` _Linux_
+`ELECTRON_TRASH` _Linux_
+`ELECTRON_DEFAULT_ERROR_MODE` _Windows_
+`menuItem.userAccelerator` _Readonly_ _macOS_
+`menuItem.toolTip` _macOS_
+`menuItem.sharingItem` _macOS_
+`Menu.sendActionToFirstResponder(action)` _macOS_
+`nativeImage.createThumbnailFromPath(path, size)` _macOS_ _Windows_
+`nativeImage.createFromNamedImage(imageName[, hslShift])` _macOS_
+`image.getNativeHandle()` _macOS_
+`nativeImage.isMacTemplateImage` _macOS_
+`nativeTheme.shouldUseHighContrastColors` _macOS_ _Windows_ _Readonly_
+`nativeTheme.shouldUseDarkColorsForSystemIntegratedUI` _macOS_ _Windows_ _Readonly_
+`nativeTheme.shouldUseInvertedColorScheme` _macOS_ _Windows_ _Readonly_
+`nativeTheme.inForcedColorsMode` _Windows_ _Readonly_
+Event: 'reply' _macOS_
+Event: 'action' _macOS_
+Event: 'failed' _Windows_
+`notification.urgency` _Linux_
+`notification.timeoutType` _Linux_ _Windows_
+`notification.toastXml` _Windows_
+Event: 'on-ac' _macOS_ _Windows_
+Event: 'on-battery' _macOS_  _Windows_
+Event: 'thermal-state-change' _macOS_
+Event: 'speed-limit-change' _macOS_ _Windows_
+Event: 'shutdown' _Linux_ _macOS_
+Event: 'lock-screen' _macOS_ _Windows_
+Event: 'unlock-screen' _macOS_ _Windows_
+Event: 'user-did-become-active' _macOS_
+Event: 'user-did-resign-active' _macOS_
+`powerMonitor.getCurrentThermalState()` _macOS_
+`process.setFdLimit(maxDescriptors)` _macOS_ _Linux_
+Event: 'received-apns-notification' _macOS_
+`pushNotifications.registerForAPNSNotifications()` _macOS_
+`pushNotifications.unregisterForAPNSNotifications()` _macOS_
+`safeStorage.getSelectedStorageBackend()` _Linux_
+`screen.screenToDipPoint(point)` _Windows_ _Linux_
+`screen.dipToScreenPoint(point)` _Windows_ _Linux_
+`screen.screenToDipRect(window, rect)` _Windows_
+`screen.dipToScreenRect(window, rect)` _Windows_
+`ses.setBluetoothPairingHandler(handler)` _Windows_ _Linux_
+`shell.writeShortcutLink(shortcutPath[, operation], options)` _Windows_
+`shell.readShortcutLink(shortcutPath)` _Windows_
+Event: 'accent-color-changed' _Windows_ _Linux_
+Event: 'color-changed' _Windows_
+`systemPreferences.isSwipeTrackingFromScrollEventsEnabled()` _macOS_
+`systemPreferences.postNotification(event, userInfo[, deliverImmediately])` _macOS_
+`systemPreferences.postLocalNotification(event, userInfo)` _macOS_
+`systemPreferences.postWorkspaceNotification(event, userInfo)` _macOS_
+`systemPreferences.subscribeNotification(event, callback)` _macOS_
+`systemPreferences.subscribeLocalNotification(event, callback)` _macOS_
+`systemPreferences.subscribeWorkspaceNotification(event, callback)` _macOS_
+`systemPreferences.unsubscribeNotification(id)` _macOS_
+`systemPreferences.unsubscribeLocalNotification(id)` _macOS_
+`systemPreferences.unsubscribeWorkspaceNotification(id)` _macOS_
+`systemPreferences.registerDefaults(defaults)` _macOS_
+`systemPreferences.getUserDefault<Type extends keyof UserDefaultTypes>(key, type)` _macOS_
+`systemPreferences.setUserDefault<Type extends keyof UserDefaultTypes>(key, type, value)` _macOS_
+`systemPreferences.removeUserDefault(key)` _macOS_
+`systemPreferences.getColor(color)` _Windows_ _macOS_
+`systemPreferences.getSystemColor(color)` _macOS_
+`systemPreferences.getEffectiveAppearance()` _macOS_
+`systemPreferences.canPromptTouchID()` _macOS_
+`systemPreferences.promptTouchID(reason)` _macOS_
+`systemPreferences.isTrustedAccessibilityClient(prompt)` _macOS_
+`systemPreferences.getMediaAccessStatus(mediaType)` _Windows_ _macOS_
+`systemPreferences.askForMediaAccess(mediaType)` _macOS_
+`systemPreferences.accessibilityDisplayShouldReduceTransparency` _macOS_ _Deprecated_
+`systemPreferences.effectiveAppearance` _macOS_ _Readonly_
+Event: 'right-click' _macOS_ _Windows_
+Event: 'double-click' _macOS_ _Windows_
+Event: 'middle-click' _Windows_
+Event: 'balloon-show' _Windows_
+Event: 'balloon-click' _Windows_
+Event: 'balloon-closed' _Windows_
+Event: 'drop' _macOS_
+Event: 'drop-files' _macOS_
+Event: 'drop-text' _macOS_
+Event: 'drag-enter' _macOS_
+Event: 'drag-leave' _macOS_
+Event: 'drag-end' _macOS_
+Event: 'mouse-up' _macOS_
+Event: 'mouse-down' _macOS_
+Event: 'mouse-enter' _macOS_ _Windows_
+Event: 'mouse-leave' _macOS_ _Windows_
+Event: 'mouse-move' _macOS_ _Windows_
+`tray.setPressedImage(image)` _macOS_
+`tray.setTitle(title[, options])` _macOS_
+`tray.getTitle()` _macOS_
+`tray.setIgnoreDoubleClickEvents(ignore)` _macOS_
+`tray.getIgnoreDoubleClickEvents()` _macOS_
+`tray.displayBalloon(options)` _Windows_
+`tray.removeBalloon()` _Windows_
+`tray.focus()` _Windows_
+`tray.popUpContextMenu([menu, position])` _macOS_ _Windows_
+`tray.closeContextMenu()` _macOS_ _Windows_
+`tray.getBounds()` _macOS_ _Windows_
+`tray.getGUID()` _macOS_ _Windows_
+`contents.showDefinitionForSelection()` _macOS_
+`<webview>.showDefinitionForSelection()` _macOS_

@@ -1,0 +1,129 @@
+name: ElectronNET Integration Tests
+
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    branches: [ develop, main ]
+
+concurrency:
+  group: integration-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Integration Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: windows-latest
+            rid: win-x64
+
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_NOLOGO: 1
+      CI: true
+      ELECTRON_ENABLE_LOGGING: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Restore
+        run: dotnet restore -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj
+
+      - name: Build
+        run: dotnet build --no-restore -c Release -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj
+
+      - name: Install Linux GUI dependencies
+        if: runner.os == 'Linux'
+        run: |
+          set -e
+          sudo apt-get update
+          # Core Electron dependencies
+          sudo apt-get install -y xvfb \
+            libgtk-3-0 libnss3 libgdk-pixbuf-2.0-0 libdrm2 libgbm1 libxss1 libxtst6 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libx11-xcb1 || true
+          # Handle Ubuntu 24.04 time64 transition for ALSA
+          if ! dpkg -s libasound2 >/dev/null 2>&1; then
+            sudo apt-get install -y libasound2t64
+          fi
+
+      - name: Run tests (Linux)
+        if: runner.os == 'Linux'
+        continue-on-error: true
+        run: |
+          mkdir -p test-results
+          xvfb-run -a dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj \
+            -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} \
+            --logger "trx;LogFileName=TestResults.trx" \
+            --results-directory test-results
+
+      - name: Run tests (Windows)
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        run: |
+          New-Item -ItemType Directory -Force -Path test-results | Out-Null
+          dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} --logger "trx;LogFileName=TestResults.trx" --results-directory test-results
+
+      - name: Upload raw test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: test-results/*.trx
+          retention-days: 7
+
+      - name: Publish Test Results (Checks UI - Linux)
+        if: always() && runner.os == 'Linux'
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: test-results/*.trx
+          check_name: ElectronNET Integration Tests (${{ matrix.os }})
+          comment_mode: off
+
+      - name: Publish Test Results (Checks UI - Windows)
+        if: always() && runner.os == 'Windows'
+        uses: EnricoMi/publish-unit-test-result-action/windows@v2
+        with:
+          files: test-results/*.trx
+          check_name: ElectronNET Integration Tests (${{ matrix.os }})
+          comment_mode: off
+
+      - name: Fail if tests failed (after publishing)
+        if: always()
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'test-results')) { Write-Error 'No test-results folder found'; exit 1 }
+          $failed = 0
+          Get-ChildItem 'test-results' -Filter *.trx | ForEach-Object {
+            [xml]$xml = Get-Content $_.FullName
+            $counters = $xml.TestRun.ResultSummary.Counters
+            if ($counters) {
+              $failed += [int]$counters.failed + [int]$counters.error + [int]$counters.timeout
+            }
+          }
+          if ($failed -gt 0) { Write-Error "Tests failed: $failed"; exit 1 } else { Write-Host 'All tests passed' }
+
+  summary:
+    name: Aggregate
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [tests]
+    steps:
+      - name: Summary
+        run: echo "All matrix test jobs completed."
