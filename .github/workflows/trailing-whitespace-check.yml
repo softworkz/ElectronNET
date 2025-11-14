@@ -1,0 +1,80 @@
+name: Trailing Whitespace Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-trailing-whitespace:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Check for trailing whitespace
+      run: |
+        echo "Checking for trailing whitespace in changed files..."
+
+        # Get the base branch
+        BASE_SHA="${{ github.event.pull_request.base.sha }}"
+        HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+        # Get list of changed files (excluding deleted files)
+        CHANGED_FILES=$(git diff --name-only --diff-filter=d "$BASE_SHA" "$HEAD_SHA")
+
+        if [ -z "$CHANGED_FILES" ]; then
+          echo "No files to check."
+          exit 0
+        fi
+
+        # File patterns to check (text files)
+        PATTERNS="\.cs$|\.csproj$|\.sln$|\.json$|\.yml$|\.yaml$|\.md$|\.sh$|\.ps1$|\.cmd$|\.txt$|\.xml$|\.config$|\.props$|\.targets$|\.js$|\.ts$|\.html$|\.css$|\.scss$"
+
+        # Directories and file patterns to exclude
+        EXCLUDE_PATTERNS="(^|\/)(\.|node_modules|bin|obj|artifacts|packages|\.vs|\.nuke\/temp)($|\/)"
+
+        ERRORS_FOUND=0
+        TEMP_FILE=$(mktemp)
+
+        while IFS= read -r file; do
+          # Skip if file doesn't exist (shouldn't happen with --diff-filter=d, but just in case)
+          if [ ! -f "$file" ]; then
+            continue
+          fi
+
+          # Check if file matches patterns to check
+          if ! echo "$file" | grep -qE "$PATTERNS"; then
+            continue
+          fi
+
+          # Check if file should be excluded
+          if echo "$file" | grep -qE "$EXCLUDE_PATTERNS"; then
+            continue
+          fi
+
+          # Check for trailing whitespace
+          if grep -n '[[:space:]]$' "$file" > /dev/null 2>&1; then
+            echo "❌ Trailing whitespace found in: $file"
+            grep -n '[[:space:]]$' "$file" | head -10
+            if [ $(grep -c '[[:space:]]$' "$file") -gt 10 ]; then
+              echo "   ... and $(($(grep -c '[[:space:]]$' "$file") - 10)) more lines"
+            fi
+            echo "1" >> "$TEMP_FILE"
+          fi
+        done <<< "$CHANGED_FILES"
+
+        ERRORS_FOUND=$(wc -l < "$TEMP_FILE" 2>/dev/null || echo "0")
+        rm -f "$TEMP_FILE"
+
+        if [ "$ERRORS_FOUND" -gt 0 ]; then
+          echo ""
+          echo "❌ Found trailing whitespace in $ERRORS_FOUND file(s)."
+          echo "Please remove trailing whitespace from the files listed above."
+          exit 1
+        else
+          echo "✅ No trailing whitespace found in changed files."
+          exit 0
+        fi
