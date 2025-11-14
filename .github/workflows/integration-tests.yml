@@ -88,12 +88,21 @@ jobs:
           path: test-results/*.trx
           retention-days: 7
 
-      - name: Publish Test Results (official Checks UI)
-        if: always()
-        uses: actions/upload-test-results@v2
+      - name: Publish Test Results (Checks UI - Linux)
+        if: always() && runner.os == 'Linux'
+        uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           files: test-results/*.trx
-          report-name: ElectronNET Integration Tests (${{ matrix.os }})
+          check_name: ElectronNET Integration Tests (${{ matrix.os }})
+          comment_mode: off
+
+      - name: Publish Test Results (Checks UI - Windows)
+        if: always() && runner.os == 'Windows'
+        uses: EnricoMi/publish-unit-test-result-action/windows@v2
+        with:
+          files: test-results/*.trx
+          check_name: ElectronNET Integration Tests (${{ matrix.os }})
+          comment_mode: off
 
       - name: Fail if tests failed (after publishing)
         if: always()
