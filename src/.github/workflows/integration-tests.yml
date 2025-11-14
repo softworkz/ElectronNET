@@ -1,0 +1,111 @@
+name: ElectronNET Integration Tests
+
+on:
+  push:
+    branches: [ develop, main ]
+  pull_request:
+    branches: [ develop, main ]
+
+permissions:
+  contents: read
+  checks: write
+  actions: read
+  statuses: write
+  # needed for publish-unit-test-result-action
+
+concurrency:
+  group: integration-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Integration Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: windows-latest
+            rid: win-x64
+
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      DOTNET_NOLOGO: 1
+      CI: true
+      ELECTRON_ENABLE_LOGGING: 1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          include-prerelease: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Restore
+        run: dotnet restore -r ${{ matrix.rid }} src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj
+
+      - name: Build
+        run: dotnet build --no-restore -c Release -r ${{ matrix.rid }} src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj
+
+      - name: Install Linux GUI dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb \
+            libgtk-3-0 libnss3 libgdk-pixbuf2.0-0 libdrm2 libgbm1 libasound2 libxss1 libxtst6 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libx11-xcb1
+
+      - name: Run tests (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          mkdir -p test-results
+          xvfb-run -a dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj \
+            -c Release --no-build -r ${{ matrix.rid }} \
+            --logger "trx;LogFileName=TestResults.trx" \
+            --results-directory test-results
+
+      - name: Run tests (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          mkdir test-results
+          dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj \
+            -c Release --no-build -r ${{ matrix.rid }} \
+            --logger "trx;LogFileName=TestResults.trx" \
+            --results-directory test-results
+
+      - name: Upload raw test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: test-results/*.trx
+          retention-days: 7
+
+      - name: Publish Test Results (Checks UI)
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: test-results/*.trx
+          check_name: ElectronNET Integration Tests (${{ matrix.os }})
+          comment_mode: off
+
+      - name: Fail if tests failed
+        if: steps.Publish_Test_Results.outcome == 'failure'
+        run: exit 1
+
+  summary:
+    name: Aggregate
+    runs-on: ubuntu-latest
+    needs: [tests]
+    steps:
+      - name: Summary
+        run: echo "All matrix test jobs completed."
