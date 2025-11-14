@@ -1,5 +1,6 @@
 using ElectronNET.API.Entities;
 using ElectronNET.API.Serialization;
+using System.Runtime.Versioning;
 using System.Text.Json;
 using System.Threading.Tasks;
 // ReSharper disable InconsistentNaming
@@ -97,6 +98,8 @@ namespace ElectronNET.API
         /// be empty strings when the bookmark is unavailable.
         /// </summary>
         /// <returns></returns>
+        [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Windows")]
         public Task<ReadBookmark> ReadBookmarkAsync() => GetPropertyAsync<ReadBookmark>();
 
         /// <summary>
@@ -109,6 +112,8 @@ namespace ElectronNET.API
         /// <param name="title"></param>
         /// <param name="url"></param>
         /// <param name="type"></param>
+        [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Windows")]
         public void WriteBookmark(string title, string url, string type = "")
         {
             BridgeConnector.Socket.Emit("clipboard-writeBookmark", title, url, type);
@@ -120,6 +125,7 @@ namespace ElectronNET.API
         /// find pasteboard whenever the application is activated.
         /// </summary>
         /// <returns></returns>
+        [SupportedOSPlatform("macOS")]
         public Task<string> ReadFindTextAsync() => GetPropertyAsync<string>();
 
         /// <summary>
@@ -127,6 +133,7 @@ namespace ElectronNET.API
         /// synchronous IPC when called from the renderer process.
         /// </summary>
         /// <param name="text"></param>
+        [SupportedOSPlatform("macOS")]
         public void WriteFindText(string text)
         {
             BridgeConnector.Socket.Emit("clipboard-writeFindText", text);
