@@ -11,28 +11,46 @@ namespace ElectronNET.IntegrationTests
 
         public async Task InitializeAsync()
         {
-            AppDomain.CurrentDomain.SetData("ElectronTestAssembly", Assembly.GetExecutingAssembly());
-            var runtimeController = ElectronNetRuntime.RuntimeController;
-            await runtimeController.Start();
-            await runtimeController.WaitReadyTask;
-
-            // create hidden window for tests (avoid showing UI)
-            this.MainWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
+            try
             {
-                Show = false,
-                Width = 800,
-                Height = 600,
-            }, "about:blank");
+                Console.Error.WriteLine("[ElectronFixture] InitializeAsync: start");
+                AppDomain.CurrentDomain.SetData("ElectronTestAssembly", Assembly.GetExecutingAssembly());
+                Console.Error.WriteLine("[ElectronFixture] Acquire RuntimeController");
+                var runtimeController = ElectronNetRuntime.RuntimeController;
+                Console.Error.WriteLine("[ElectronFixture] Starting Electron runtime...");
+                await runtimeController.Start();
+                Console.Error.WriteLine("[ElectronFixture] Waiting for Ready...");
+                await runtimeController.WaitReadyTask;
+                Console.Error.WriteLine("[ElectronFixture] Runtime Ready");
 
-            // Clear potential cache side-effects
-            await this.MainWindow.WebContents.Session.ClearCacheAsync();
+                // create hidden window for tests (avoid showing UI)
+                Console.Error.WriteLine("[ElectronFixture] Creating hidden BrowserWindow");
+                this.MainWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
+                {
+                    Show = false,
+                    Width = 800,
+                    Height = 600,
+                }, "about:blank");
+
+                Console.Error.WriteLine("[ElectronFixture] Clearing session cache");
+                await this.MainWindow.WebContents.Session.ClearCacheAsync();
+                Console.Error.WriteLine("[ElectronFixture] InitializeAsync: done");
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("[ElectronFixture] InitializeAsync: exception");
+                Console.Error.WriteLine(ex.ToString());
+                throw;
+            }
         }
 
         public async Task DisposeAsync()
         {
             var runtimeController = ElectronNetRuntime.RuntimeController;
+            Console.Error.WriteLine("[ElectronFixture] Stopping Electron runtime...");
             await runtimeController.Stop();
             await runtimeController.WaitStoppedTask;
+            Console.Error.WriteLine("[ElectronFixture] Runtime stopped");
         }
     }
 

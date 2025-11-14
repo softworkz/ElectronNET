@@ -71,6 +71,7 @@ jobs:
           xvfb-run -a dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj \
             -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} \
             --logger "trx;LogFileName=TestResults.trx" \
+            --logger "GitHubActions" \
             --results-directory test-results
 
       - name: Run tests (Windows)
@@ -78,7 +79,7 @@ jobs:
         continue-on-error: true
         run: |
           New-Item -ItemType Directory -Force -Path test-results | Out-Null
-          dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} --logger "trx;LogFileName=TestResults.trx" --results-directory test-results
+          dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} --logger "trx;LogFileName=TestResults.trx" --logger "GitHubActions" --results-directory test-results
 
       - name: Upload raw test results
         if: always()

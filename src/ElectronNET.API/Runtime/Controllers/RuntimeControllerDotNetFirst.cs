@@ -82,11 +82,11 @@
 
         private void HandleStopped()
         {
-            if (this.socketBridge.State != LifetimeState.Stopped)
+            if (this.socketBridge != null && this.socketBridge.State != LifetimeState.Stopped)
             {
                 this.socketBridge.Stop();
             }
-            else if (this.electronProcess.State != LifetimeState.Stopped)
+            else if (this.electronProcess != null && this.electronProcess.State != LifetimeState.Stopped)
             {
                 this.electronProcess.Stop();
             }
