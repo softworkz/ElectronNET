@@ -40,7 +40,7 @@
         {
             var isUnPacked = ElectronNetRuntime.StartupMethod.IsUnpackaged();
             var electronBinaryName = ElectronNetRuntime.ElectronExecutable;
-            var args = Environment.CommandLine;
+            var args = string.Format("{0} {1}", ElectronNetRuntime.ElectronExtraArguments, Environment.CommandLine).Trim();
             this.port = ElectronNetRuntime.ElectronSocketPort;
 
             if (!this.port.HasValue)

@@ -13,6 +13,7 @@ namespace ElectronNET.IntegrationTests
         {
             try
             {
+                ElectronNetRuntime.ElectronExtraArguments = "--no-sandbox";
                 Console.Error.WriteLine("[ElectronFixture] InitializeAsync: start");
                 AppDomain.CurrentDomain.SetData("ElectronTestAssembly", Assembly.GetExecutingAssembly());
                 Console.Error.WriteLine("[ElectronFixture] Acquire RuntimeController");
@@ -20,7 +21,13 @@ namespace ElectronNET.IntegrationTests
                 Console.Error.WriteLine("[ElectronFixture] Starting Electron runtime...");
                 await runtimeController.Start();
                 Console.Error.WriteLine("[ElectronFixture] Waiting for Ready...");
-                await runtimeController.WaitReadyTask;
+                await runtimeController.WaitReadyTask.WaitAsync(TimeSpan.FromSeconds(10));
+
+                if (!runtimeController.WaitReadyTask.IsCompleted)
+                {
+                    throw new TimeoutException("The Electron process did not start within 10 seconds");
+                }
+
                 Console.Error.WriteLine("[ElectronFixture] Runtime Ready");
 
                 // create hidden window for tests (avoid showing UI)
