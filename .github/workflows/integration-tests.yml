@@ -1,4 +1,4 @@
-name: ElectronNET Integration Tests
+name: Tests
 
 on:
   push:
@@ -84,17 +84,17 @@ jobs:
           path: test-results/*.trx
           retention-days: 7
 
-      - name: Publish Test Results
-        if: always()
-        uses: EnricoMi/publish-unit-test-result-action/composite@v2
-        with:
-          files: test-results/*.trx
-          check_name: Integration Tests (${{ matrix.os }})
-          comment_mode: always
-          check_run: true
-          check_run_annotations: all tests
-          check_run_annotations_branch: "*"
-          fail_on: test failures
+      # - name: Publish Test Results
+      #   if: always()
+      #   uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      #   with:
+      #     files: test-results/*.trx
+      #     check_name: Integration Tests (${{ matrix.os }})
+      #     comment_mode: always
+      #     check_run: true
+      #     check_run_annotations: all tests
+      #     check_run_annotations_branch: "*"
+      #     fail_on: test failures
 
       # - name: Fail if tests failed (after publishing)
       #   if: always()
@@ -113,9 +113,25 @@ jobs:
 
   summary:
     name: Aggregate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: always()
     needs: [tests]
     steps:
+      - name: Download all test results
+        uses: actions/download-artifact@v4
+        with:
+          path: test-results
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          files: "test-results/*.trx"
+          check_name: "Integration Tests"
+          comment_mode: always
+          check_run: true
+          check_run_annotations: all tests
+          check_run_annotations_branch: "*"
+          fail_on: test failures
+
       - name: Summary
         run: echo "All matrix test jobs completed."
