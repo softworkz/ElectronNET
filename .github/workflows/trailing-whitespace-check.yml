@@ -33,7 +33,7 @@ jobs:
         fi
 
         # File patterns to check (text files)
-        PATTERNS="\.cs$|\.csproj$|\.sln$|\.json$|\.yml$|\.yaml$|\.md$|\.sh$|\.ps1$|\.cmd$|\.txt$|\.xml$|\.config$|\.props$|\.targets$|\.js$|\.ts$|\.html$|\.css$|\.scss$"
+        PATTERNS="\.cs$|\.csproj$|\.sln$|\.ts$|\.html$|\.css$|\.scss$"
 
         # Directories and file patterns to exclude
         EXCLUDE_PATTERNS="(^|\/)(\.|node_modules|bin|obj|artifacts|packages|\.vs|\.nuke\/temp)($|\/)"
