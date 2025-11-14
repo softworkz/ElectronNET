@@ -84,36 +84,32 @@ jobs:
           path: test-results/*.trx
           retention-days: 7
 
-      - name: Publish Test Results (Checks UI - Linux)
-        if: always() && runner.os == 'Linux'
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        with:
-          files: test-results/*.trx
-          check_name: ElectronNET Integration Tests (${{ matrix.os }})
-          comment_mode: off
-
-      - name: Publish Test Results (Checks UI - Windows)
-        if: always() && runner.os == 'Windows'
-        uses: EnricoMi/publish-unit-test-result-action/windows@v2
-        with:
-          files: test-results/*.trx
-          check_name: ElectronNET Integration Tests (${{ matrix.os }})
-          comment_mode: off
-
-      - name: Fail if tests failed (after publishing)
+      - name: Publish Test Results
         if: always()
-        shell: pwsh
-        run: |
-          if (-not (Test-Path 'test-results')) { Write-Error 'No test-results folder found'; exit 1 }
-          $failed = 0
-          Get-ChildItem 'test-results' -Filter *.trx | ForEach-Object {
-            [xml]$xml = Get-Content $_.FullName
-            $counters = $xml.TestRun.ResultSummary.Counters
-            if ($counters) {
-              $failed += [int]$counters.failed + [int]$counters.error + [int]$counters.timeout
-            }
-          }
-          if ($failed -gt 0) { Write-Error "Tests failed: $failed"; exit 1 } else { Write-Host 'All tests passed' }
+        uses: EnricoMi/publish-unit-test-result-action/composite@v2
+        with:
+          files: test-results/*.trx
+          check_name: Integration Tests (${{ matrix.os }})
+          comment_mode: always
+          check_run: true
+          check_run_annotations: all tests
+          check_run_annotations_branch: "*"
+          fail_on: test failures
+
+      # - name: Fail if tests failed (after publishing)
+      #   if: always()
+      #   shell: pwsh
+      #   run: |
+      #     if (-not (Test-Path 'test-results')) { Write-Error 'No test-results folder found'; exit 1 }
+      #     $failed = 0
+      #     Get-ChildItem 'test-results' -Filter *.trx | ForEach-Object {
+      #       [xml]$xml = Get-Content $_.FullName
+      #       $counters = $xml.TestRun.ResultSummary.Counters
+      #       if ($counters) {
+      #         $failed += [int]$counters.failed + [int]$counters.error + [int]$counters.timeout
+      #       }
+      #     }
+      #     if ($failed -gt 0) { Write-Error "Tests failed: $failed"; exit 1 } else { Write-Host 'All tests passed' }
 
   summary:
     name: Aggregate

@@ -1,10 +1,12 @@
 namespace ElectronNET.IntegrationTests
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using ElectronNET.API;
     using ElectronNET.API.Entities;
 
     // Shared fixture that starts Electron runtime once
+    [SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
     public class ElectronFixture : IAsyncLifetime
     {
         public BrowserWindow MainWindow { get; private set; } = null!;
@@ -15,11 +17,14 @@ namespace ElectronNET.IntegrationTests
             {
                 Console.Error.WriteLine("[ElectronFixture] InitializeAsync: start");
                 AppDomain.CurrentDomain.SetData("ElectronTestAssembly", Assembly.GetExecutingAssembly());
-                Console.Error.WriteLine("[ElectronFixture] Acquire RuntimeController");
+
+                Console.WriteLine("[ElectronFixture] Acquire RuntimeController");
                 var runtimeController = ElectronNetRuntime.RuntimeController;
                 ElectronNetRuntime.ElectronExtraArguments = "--no-sandbox";
+
                 Console.Error.WriteLine("[ElectronFixture] Starting Electron runtime...");
                 await runtimeController.Start();
+
                 Console.Error.WriteLine("[ElectronFixture] Waiting for Ready...");
                 await runtimeController.WaitReadyTask.WaitAsync(TimeSpan.FromSeconds(10));
 
@@ -31,7 +36,6 @@ namespace ElectronNET.IntegrationTests
                 Console.Error.WriteLine("[ElectronFixture] Runtime Ready");
 
                 // create hidden window for tests (avoid showing UI)
-                Console.Error.WriteLine("[ElectronFixture] Creating hidden BrowserWindow");
                 this.MainWindow = await Electron.WindowManager.CreateWindowAsync(new BrowserWindowOptions
                 {
                     Show = false,
@@ -39,9 +43,7 @@ namespace ElectronNET.IntegrationTests
                     Height = 600,
                 }, "about:blank");
 
-                Console.Error.WriteLine("[ElectronFixture] Clearing session cache");
                 await this.MainWindow.WebContents.Session.ClearCacheAsync();
-                Console.Error.WriteLine("[ElectronFixture] InitializeAsync: done");
             }
             catch (Exception ex)
             {
