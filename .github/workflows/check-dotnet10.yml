@@ -1,0 +1,89 @@
+name: Check .NET 10 Availability
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+
+jobs:
+  check-dotnet10-ubuntu:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Check pre-installed .NET versions
+      run: |
+        echo "=== Checking for pre-installed .NET SDKs ==="
+        if command -v dotnet &> /dev/null; then
+          echo "dotnet command is available"
+          dotnet --version
+          echo ""
+          echo "=== All installed .NET SDKs ==="
+          dotnet --list-sdks
+          echo ""
+          echo "=== All installed .NET runtimes ==="
+          dotnet --list-runtimes
+        else
+          echo "dotnet command is not available"
+        fi
+        echo ""
+        echo "=== Checking for .NET 10 specifically ==="
+        if dotnet --list-sdks | grep -q "^10\."; then
+          echo "✓ .NET 10 SDK is pre-installed!"
+        else
+          echo "✗ .NET 10 SDK is NOT pre-installed"
+        fi
+        
+    - name: Attempt to install .NET 10
+      run: |
+        echo "=== Attempting to install .NET 10 using setup-dotnet action ==="
+      continue-on-error: true
+      
+    - name: Setup .NET 10
+      uses: actions/setup-dotnet@v4
+      continue-on-error: true
+      with:
+        dotnet-version: '10.0.x'
+        
+    - name: Verify .NET 10 installation
+      run: |
+        echo "=== Verifying .NET 10 after setup-dotnet ==="
+        if dotnet --list-sdks | grep -q "^10\."; then
+          echo "✓ .NET 10 SDK is now available!"
+          dotnet --version
+        else
+          echo "✗ .NET 10 SDK installation failed or is not available yet"
+          echo ""
+          echo "Current .NET version:"
+          dotnet --version
+          echo ""
+          echo "Available SDKs:"
+          dotnet --list-sdks
+        fi
+        
+    - name: Test .NET 10 project creation
+      run: |
+        echo "=== Testing .NET 10 project creation ==="
+        mkdir -p /tmp/dotnet10-test
+        cd /tmp/dotnet10-test
+        if dotnet new console --framework net10.0 --name TestApp; then
+          echo "✓ Successfully created .NET 10 project"
+          cat TestApp/TestApp.csproj
+        else
+          echo "✗ Failed to create .NET 10 project"
+          echo "Trying with net8.0 for comparison..."
+          dotnet new console --framework net8.0 --name TestApp8
+        fi
+      continue-on-error: true
+      
+    - name: Summary
+      if: always()
+      run: |
+        echo "=== Summary ==="
+        echo "This workflow checks if .NET 10 is available on Ubuntu GitHub Action runners."
+        echo "Check the steps above to see:"
+        echo "1. What .NET versions are pre-installed"
+        echo "2. Whether .NET 10 can be installed via setup-dotnet action"
+        echo "3. Whether .NET 10 projects can be created"
