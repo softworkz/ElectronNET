@@ -157,6 +157,9 @@ jobs:
           pull-request: true
           status-check: true
           status-check-name: 'Integration Tests'
+          use-suite-name: true
+          update-comment: true
+          always-group-by: true
 
           # Turn on (almost) all built-in reports
           summary-report: false
@@ -175,15 +178,16 @@ jobs:
           insights-report: true
           flaky-report: true
           flaky-rate-report: true
-          fail-rate-report: true
-          slowest-report: true
+          fail-rate-report: false
+          slowest-report: false
+          pull-request-report: true
 
           # Store processed CTRF for comparisons on future runs
           upload-artifact: true
           fetch-previous-results: true
 
           # Optional: make the order explicit
-          report-order: 'summary-delta-report,failed-report,fail-rate-report,slowest-report,skipped-report,suite-folded-report,file-report,previous-results-report,github-report'
+          report-order: 'summary-delta-report,failed-report,skipped-report,suite-folded-report,file-report,previous-results-report,github-report'
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
