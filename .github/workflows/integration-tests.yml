@@ -113,7 +113,6 @@ jobs:
         with:
           path: test-results
 
-      # --- CTRF: setup & convert all TRX to CTRF in the aggregate job ---
       - name: Setup .NET (for CTRF conversion)
         uses: actions/setup-dotnet@v4
         with:
@@ -123,6 +122,39 @@ jobs:
         run: |
           dotnet new tool-manifest
           dotnet tool install DotnetCtrfJsonReporter --local
+
+      - name: Convert TRX → CTRF and clean names (keep suites; set filePath=OS)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ctrf
+          shopt -s globstar nullglob
+          conv=0
+          strip='ElectronNET\.IntegrationTests\.Tests\.'
+          for trx in test-results/**/*.trx; do
+            os="$(basename "$(dirname "$trx")")"
+            [[ "$os" == "test-results" ]] && os="unknown"
+
+            outdir="ctrf/${os}"
+            mkdir -p "$outdir"
+            out="${outdir}/ctrf-report.json"
+
+            # TRX → CTRF
+            dotnet tool run DotnetCtrfJsonReporter -p "$trx" -d "$outdir" -f "ctrf-report.json"
+
+            # Strip prefix from names; DO NOT touch suite; set filePath to OS
+            jq --arg os "$os" --arg strip "$strip" -f - "$out" > "${out}.tmp" <<'JQ' && mv "${out}.tmp" "$out"
+            .results |= map(
+              (.name      |= ((. // "") | sub($strip; ""))) |
+              (.fullName? |= ((. // "") | sub($strip; ""))) |
+              (.className?|= ((. // "") | sub($strip; ""))) |
+              (.filePath   =  $os)
+            )
+
+            echo "Converted & normalized $trx -> $out"
+            conv=$((conv+1))
+          done
+          echo "Processed $conv TRX file(s)"
 
       - name: Convert TRX → CTRF (per downloaded artifact)
         shell: bash
