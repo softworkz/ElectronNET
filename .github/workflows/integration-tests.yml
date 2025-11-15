@@ -64,10 +64,10 @@ jobs:
         if: runner.os == 'Linux'
         continue-on-error: true
         run: |
-          mkdir -p test-results
+          mkdir -p test-results/Ubuntu
           xvfb-run -a dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj \
             -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} \
-            --logger "trx;LogFileName=TestResults.trx" \
+            --logger "trx;LogFileName=Ubuntu.trx" \
             --logger "console;verbosity=detailed" \
             --results-directory test-results
 
@@ -75,15 +75,15 @@ jobs:
         if: runner.os == 'Windows'
         continue-on-error: true
         run: |
-          New-Item -ItemType Directory -Force -Path test-results | Out-Null
-          dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} --logger "trx;LogFileName=TestResults.trx" --logger "console;verbosity=detailed" --results-directory test-results
+          New-Item -ItemType Directory -Force -Path test-results/Windows | Out-Null
+          dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} --logger "trx;LogFileName=Windows.trx" --logger "console;verbosity=detailed" --results-directory test-results
 
       - name: Run tests (macOS)
         if: runner.os == 'macOS'
         continue-on-error: true
         run: |
-          mkdir -p test-results
-          dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} --logger "trx;LogFileName=TestResults.trx" --logger "console;verbosity=detailed" --results-directory test-results
+          mkdir -p test-results/macOS
+          dotnet test src/ElectronNET.IntegrationTests/ElectronNET.IntegrationTests.csproj -c Release --no-build -r ${{ matrix.rid }} -p:RuntimeIdentifier=${{ matrix.rid }} --logger "trx;LogFileName=macOS.trx" --logger "console;verbosity=detailed" --results-directory test-results
 
       - name: Upload raw test results
         if: always()
@@ -140,6 +140,7 @@ jobs:
           check_run: true
           check_run_annotations: all tests
           check_run_annotations_branch: "*"
+          report_individual_runs: true
           fail_on: test failures
 
       - name: Summary
