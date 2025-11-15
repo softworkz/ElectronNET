@@ -149,12 +149,10 @@ jobs:
         if: always()
         uses: ctrf-io/github-test-reporter@v1
         with:
-          # Pick up every CTRF we just created (one per OS/artifact)
           report-path: 'ctrf/**/*.json'
 
-          # Post everywhere (job summary, PR comment, a status check)
           summary: true
-          pull-request: true
+          pull-request: false
           status-check: false
           status-check-name: 'Integration Tests'
           use-suite-name: true
@@ -189,21 +187,23 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
 
-      # - name: Create Status Check Report
-      #   if: always()
-      #   uses: ctrf-io/github-test-reporter@v1
-      #   with:
-      #     report-path: 'ctrf/**/*.json'
+      - name: Create PR Comment
+        if: always()
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          report-path: 'ctrf/**/*.json'
 
-      #     status-check: true
-      #     status-check-name: 'Integration Tests'
-      #     use-suite-name: true
-      #     always-group-by: true
+          summary: true
+          pull-request: true
+          use-suite-name: true
+          update-comment: true
+          always-group-by: true
+          overwrite-comment: true
+          upload-artifact: false
 
-      #     # pull-request-report: true
-      #     fetch-previous-results: true
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
+          pull-request-report: true
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Summary
         run: echo "All matrix test jobs completed."
