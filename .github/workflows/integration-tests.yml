@@ -121,7 +121,6 @@ jobs:
           mkdir -p ctrf
           shopt -s globstar nullglob
           conv=0
-          strip='ElectronNET\.IntegrationTests\.Tests\.'
           for trx in test-results/**/*.trx; do
             os="$(basename "$(dirname "$trx")")"
             [[ "$os" == "test-results" ]] && os="unknown"
@@ -130,11 +129,9 @@ jobs:
             mkdir -p "$outdir"
             out="${outdir}/ctrf-report.json"
 
-            # TRX → CTRF
             dotnet tool run DotnetCtrfJsonReporter -p "$trx" -d "$outdir" -f "ctrf-report.json"
 
-            # Strip prefix from names; DO NOT touch suite; set filePath to OS
-            jq --arg os "$os" --arg strip "$strip" '.results |= map((.fullName? |= ((. // "") | sub($strip; ""))) | (.className? |= ((. // "") | sub($strip; ""))) | (.filePath = $os))' "$out" > "${out}.tmp" && mv "${out}.tmp" "$out"
+            jq --arg os "$os" '.results |= map(.filePath = $os)' "$out" > "${out}.tmp" && mv "${out}.tmp" "$out"
 
             echo "Converted & normalized $trx -> $out"
             conv=$((conv+1))
