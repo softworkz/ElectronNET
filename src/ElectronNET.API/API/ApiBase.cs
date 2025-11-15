@@ -1,4 +1,5 @@
 ﻿// ReSharper disable InconsistentNaming
+
 namespace ElectronNET.API
 {
     using Common;
@@ -17,6 +18,7 @@ namespace ElectronNET.API
             DashesLowerFirst,
             NoDashUpperFirst
         }
+
         protected enum SocketTaskMessageNameTypes
         {
             DashesLowerFirst,
@@ -135,12 +137,12 @@ namespace ElectronNET.API
                 }).Task<T>();
             }
         }
-        
+
         protected void AddEvent(Action value, int? id = null, [CallerMemberName] string callerName = null)
         {
             Debug.Assert(callerName != null, nameof(callerName) + " != null");
             var eventName = EventName(callerName);
-            
+
             var eventKey = EventKey(eventName, id);
 
             lock (objLock)
@@ -156,7 +158,7 @@ namespace ElectronNET.API
                 container.Register(value);
             }
         }
-         
+
         protected void RemoveEvent(Action value, int? id = null, [CallerMemberName] string callerName = null)
         {
             Debug.Assert(callerName != null, nameof(callerName) + " != null");
@@ -172,11 +174,11 @@ namespace ElectronNET.API
                 }
             }
         }
-       
+
         protected void AddEvent<T>(Action<T> value, int? id = null, [CallerMemberName] string callerName = null)
         {
             Debug.Assert(callerName != null, nameof(callerName) + " != null");
-            
+
             var eventName = EventName(callerName);
             var eventKey = EventKey(eventName, id);
 
@@ -222,7 +224,7 @@ namespace ElectronNET.API
                     throw new ArgumentOutOfRangeException();
             }
         }
-        
+
         private string EventKey(string eventName, int? id)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0}{1:D}", eventName, id);
@@ -257,7 +259,7 @@ namespace ElectronNET.API
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-                
+
                 switch (apiBase.SocketTaskMessageNameType)
                 {
                     case SocketTaskMessageNameTypes.DashesLowerFirst:
@@ -289,14 +291,14 @@ namespace ElectronNET.API
                         }
                     }
                 });
-                
+
                 if (arg != null)
                 {
-                    _ = apiBase.Id >= 0 ? BridgeConnector.Socket.Emit(messageName, apiBase.Id, arg) :  BridgeConnector.Socket.Emit(messageName, arg);
+                    _ = apiBase.Id >= 0 ? BridgeConnector.Socket.Emit(messageName, apiBase.Id, arg) : BridgeConnector.Socket.Emit(messageName, arg);
                 }
                 else
                 {
-                    _ = apiBase.Id >= 0 ? BridgeConnector.Socket.Emit(messageName, apiBase.Id) :  BridgeConnector.Socket.Emit(messageName);
+                    _ = apiBase.Id >= 0 ? BridgeConnector.Socket.Emit(messageName, apiBase.Id) : BridgeConnector.Socket.Emit(messageName);
                 }
 
                 System.Threading.Tasks.Task.Delay(PropertyTimeout).ContinueWith(_ =>
@@ -321,7 +323,7 @@ namespace ElectronNET.API
                 return this.tcsTask as Task<T1>;
             }
         }
-        
+
         [SuppressMessage("ReSharper", "InconsistentlySynchronizedField")]
         private class EventContainer
         {
