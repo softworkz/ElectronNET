@@ -5,6 +5,7 @@
     using System;
     using System.ComponentModel;
     using System.IO;
+    using System.Runtime.InteropServices;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -41,6 +42,11 @@
             {
                 var electrondir = Path.Combine(dir.FullName, ".electron");
                 startCmd = Path.Combine(electrondir, "node_modules", "electron", "dist", "electron");
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    startCmd = Path.Combine(electrondir, "node_modules", "electron", "dist", "Electron.app", "Contents", "MacOS", "Electron");
+                }
 
                 args = $"main.js -unpackeddotnet --trace-warnings -electronforcedport={this.socketPort:D} " + this.extraArguments;
                 workingDir = electrondir;
