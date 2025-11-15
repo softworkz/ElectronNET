@@ -141,6 +141,8 @@ jobs:
           check_run_annotations: all tests
           check_run_annotations_branch: "*"
           report_individual_runs: true
+          test_file_prefix: "+src/"
+          report_suite_logs: any
           fail_on: test failures
 
       - name: Summary
