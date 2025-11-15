@@ -138,27 +138,6 @@ jobs:
           done
           echo "Processed $conv TRX file(s)"
 
-      - name: Convert TRX → CTRF (per downloaded artifact)
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p ctrf
-          shopt -s globstar nullglob
-          conv=0
-          # Expect structure like: test-results/test-results-ubuntu-24.04/*.trx
-          for f in test-results/**/*.trx; do
-            envname="$(basename "$(dirname "$f")")"
-            # Fallback if the trx sits directly in test-results/
-            [[ "$envname" == "test-results" ]] && envname="unknown"
-            outdir="ctrf/${envname}"
-            mkdir -p "$outdir"
-            # Produce: ctrf/<env>/ctrf-report.json
-            dotnet tool run DotnetCtrfJsonReporter -p "$f" -d "$outdir" -f "ctrf-report.json"
-            echo "Converted $f -> $outdir/ctrf-report.json"
-            conv=$((conv+1))
-          done
-          echo "Converted $conv TRX file(s) to CTRF"
-
       - name: Upload CTRF reports (for history & insights)
         if: always()
         uses: actions/upload-artifact@v4
@@ -178,7 +157,7 @@ jobs:
           summary: true
           pull-request: true
           status-check: true
-          status-check-name: 'CTRF Test Reporter'
+          status-check-name: 'Integration Tests'
 
           # Turn on (almost) all built-in reports
           summary-report: true
@@ -205,9 +184,9 @@ jobs:
           fetch-previous-results: true
 
           # Optional: make the order explicit
-          report-order: 'summary-report,summary-delta-report,tests-changed-report,failed-report,failed-folded-report,flaky-report,flaky-rate-report,fail-rate-report,slowest-report,skipped-report,suite-folded-report,suite-list-report,file-report,test-report,test-list-report,previous-results-report,github-report'
-        # env:
-        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          report-order: 'summary-report,summary-delta-report,failed-report,failed-folded-report,flaky-report,flaky-rate-report,fail-rate-report,slowest-report,skipped-report,suite-folded-report,suite-list-report,file-report,test-report,test-list-report,previous-results-report,github-report'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Summary
         run: echo "All matrix test jobs completed."
