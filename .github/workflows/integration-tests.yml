@@ -131,7 +131,7 @@ jobs:
 
             dotnet tool run DotnetCtrfJsonReporter -p "$trx" -d "$outdir" -f "ctrf-report.json"
 
-            jq --arg os "$os" '.results |= map(.filePath = $os)' "$out" > "${out}.tmp" && mv "${out}.tmp" "$out"
+            jq --arg os "$os" '.tests |= map(.filePath = $os)' "$out" > "${out}.tmp" && mv "${out}.tmp" "$out"
 
             echo "Converted & normalized $trx -> $out"
             conv=$((conv+1))
