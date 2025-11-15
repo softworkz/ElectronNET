@@ -98,6 +98,13 @@ jobs:
     runs-on: ubuntu-24.04
     if: always()
     needs: [tests]
+
+    permissions:
+      actions: read
+      contents: read
+      checks: write
+      pull-requests: write
+
     steps:
       - name: Download all test results
         uses: actions/download-artifact@v4
@@ -122,9 +129,8 @@ jobs:
           shopt -s globstar nullglob
           conv=0
           for trx in test-results/**/*.trx; do
-            os="$(basename "$(dirname "$trx")")"
-            [[ "$os" == "test-results" ]] && os="unknown"
-
+            fname="$(basename "$trx")"
+            os="${fname%.trx}"
             outdir="ctrf/${os}"
             mkdir -p "$outdir"
             out="${outdir}/ctrf-report.json"
@@ -138,13 +144,6 @@ jobs:
           done
           echo "Processed $conv TRX file(s)"
 
-      - name: Upload CTRF reports (for history & insights)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: ctrf-reports
-          path: ctrf/**/*.json
-          retention-days: 7
 
       - name: Publish CTRF Test Report (all features)
         if: always()
@@ -160,17 +159,17 @@ jobs:
           status-check-name: 'Integration Tests'
 
           # Turn on (almost) all built-in reports
-          summary-report: true
+          summary-report: false
           summary-delta-report: true
           tests-changed-report: true
           github-report: true
-          test-report: true
-          test-list-report: true
+          test-report: false
+          test-list-report: false
           failed-report: true
-          failed-folded-report: true
+          failed-folded-report: false
           skipped-report: true
           suite-folded-report: true
-          suite-list-report: true
+          suite-list-report: false
           file-report: true
           previous-results-report: true
           insights-report: true
@@ -184,7 +183,7 @@ jobs:
           fetch-previous-results: true
 
           # Optional: make the order explicit
-          report-order: 'summary-report,summary-delta-report,failed-report,failed-folded-report,flaky-report,flaky-rate-report,fail-rate-report,slowest-report,skipped-report,suite-folded-report,suite-list-report,file-report,test-report,test-list-report,previous-results-report,github-report'
+          report-order: 'summary-delta-report,failed-report,fail-rate-report,slowest-report,skipped-report,suite-folded-report,file-report,previous-results-report,github-report'
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
