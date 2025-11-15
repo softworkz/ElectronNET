@@ -145,7 +145,7 @@ jobs:
           echo "Processed $conv TRX file(s)"
 
 
-      - name: Publish CTRF Test Report (all features)
+      - name: Publish Test Report
         if: always()
         uses: ctrf-io/github-test-reporter@v1
         with:
@@ -155,16 +155,15 @@ jobs:
           # Post everywhere (job summary, PR comment, a status check)
           summary: true
           pull-request: true
-          status-check: true
+          status-check: false
           status-check-name: 'Integration Tests'
           use-suite-name: true
           update-comment: true
           always-group-by: true
+          overwrite-comment: true
 
-          # Turn on (almost) all built-in reports
           summary-report: false
           summary-delta-report: true
-          tests-changed-report: true
           github-report: true
           test-report: false
           test-list-report: false
@@ -180,14 +179,28 @@ jobs:
           flaky-rate-report: true
           fail-rate-report: false
           slowest-report: false
-          pull-request-report: true
 
-          # Store processed CTRF for comparisons on future runs
           upload-artifact: true
           fetch-previous-results: true
 
-          # Optional: make the order explicit
           report-order: 'summary-delta-report,failed-report,skipped-report,suite-folded-report,file-report,previous-results-report,github-report'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+
+      - name: Create Status Check Report
+        if: always()
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          report-path: 'ctrf/**/*.json'
+
+          status-check: true
+          status-check-name: 'Integration Tests'
+          use-suite-name: true
+          always-group-by: true
+
+          # pull-request-report: true
+          fetch-previous-results: true
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
