@@ -134,14 +134,7 @@ jobs:
             dotnet tool run DotnetCtrfJsonReporter -p "$trx" -d "$outdir" -f "ctrf-report.json"
 
             # Strip prefix from names; DO NOT touch suite; set filePath to OS
-            jq --arg os "$os" --arg strip "$strip" -f - "$out" > "${out}.tmp" <<'JQ' && mv "${out}.tmp" "$out"
-            .results |= map(
-              (.name      |= ((. // "") | sub($strip; ""))) |
-              (.fullName? |= ((. // "") | sub($strip; ""))) |
-              (.className?|= ((. // "") | sub($strip; ""))) |
-              (.filePath   =  $os)
-            )
-            JQ
+            jq --arg os "$os" --arg strip "$strip" '.results |= map((.fullName? |= ((. // "") | sub($strip; ""))) | (.className? |= ((. // "") | sub($strip; ""))) | (.filePath = $os))' "$out" > "${out}.tmp" && mv "${out}.tmp" "$out"
 
             echo "Converted & normalized $trx -> $out"
             conv=$((conv+1))
