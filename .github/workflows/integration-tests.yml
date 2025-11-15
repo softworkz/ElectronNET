@@ -161,6 +161,10 @@ jobs:
           update-comment: true
           always-group-by: true
           overwrite-comment: true
+          exit-on-fail: true
+          group-by: 'suite'
+          upload-artifact: true
+          fetch-previous-results: true
 
           summary-report: false
           summary-delta-report: true
@@ -180,29 +184,26 @@ jobs:
           fail-rate-report: false
           slowest-report: false
 
-          upload-artifact: true
-          fetch-previous-results: true
-
           report-order: 'summary-delta-report,failed-report,skipped-report,suite-folded-report,file-report,previous-results-report,github-report'
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
 
-      - name: Create Status Check Report
-        if: always()
-        uses: ctrf-io/github-test-reporter@v1
-        with:
-          report-path: 'ctrf/**/*.json'
+      # - name: Create Status Check Report
+      #   if: always()
+      #   uses: ctrf-io/github-test-reporter@v1
+      #   with:
+      #     report-path: 'ctrf/**/*.json'
 
-          status-check: true
-          status-check-name: 'Integration Tests'
-          use-suite-name: true
-          always-group-by: true
+      #     status-check: true
+      #     status-check-name: 'Integration Tests'
+      #     use-suite-name: true
+      #     always-group-by: true
 
-          # pull-request-report: true
-          fetch-previous-results: true
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      #     # pull-request-report: true
+      #     fetch-previous-results: true
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
 
       - name: Summary
         run: echo "All matrix test jobs completed."
