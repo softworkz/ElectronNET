@@ -49,10 +49,15 @@
                 ElectronNetRuntime.ElectronSocketPort = this.port;
             }
 
+            Console.Error.WriteLine("[StartCore]: isUnPacked: {0}", isUnPacked);
+            Console.Error.WriteLine("[StartCore]: electronBinaryName: {0}", electronBinaryName);
+            Console.Error.WriteLine("[StartCore]: args: {0}", args);
+
             this.electronProcess = new ElectronProcessActive(isUnPacked, electronBinaryName, args, this.port.Value);
             this.electronProcess.Ready += this.ElectronProcess_Ready;
             this.electronProcess.Stopped += this.ElectronProcess_Stopped;
 
+            Console.Error.WriteLine("[StartCore]: Before Start");
             return this.electronProcess.Start();
         }
 
