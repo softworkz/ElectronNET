@@ -1,4 +1,4 @@
-name: Tests
+﻿name: Tests
 
 on:
   push:
@@ -102,21 +102,6 @@ jobs:
           comment_mode: off
           check_run: false
 
-      # - name: Fail if tests failed (after publishing)
-      #   if: always()
-      #   shell: pwsh
-      #   run: |
-      #     if (-not (Test-Path 'test-results')) { Write-Error 'No test-results folder found'; exit 1 }
-      #     $failed = 0
-      #     Get-ChildItem 'test-results' -Filter *.trx | ForEach-Object {
-      #       [xml]$xml = Get-Content $_.FullName
-      #       $counters = $xml.TestRun.ResultSummary.Counters
-      #       if ($counters) {
-      #         $failed += [int]$counters.failed + [int]$counters.error + [int]$counters.timeout
-      #       }
-      #     }
-      #     if ($failed -gt 0) { Write-Error "Tests failed: $failed"; exit 1 } else { Write-Host 'All tests passed' }
-
   summary:
     name: Aggregate
     runs-on: ubuntu-24.04
@@ -127,6 +112,88 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: test-results
+
+      # --- CTRF: setup & convert all TRX to CTRF in the aggregate job ---
+      - name: Setup .NET (for CTRF conversion)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Install CTRF TRX→CTRF converter (dotnet tool)
+        run: |
+          dotnet new tool-manifest
+          dotnet tool install DotnetCtrfJsonReporter --local
+
+      - name: Convert TRX → CTRF (per downloaded artifact)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ctrf
+          shopt -s globstar nullglob
+          conv=0
+          # Expect structure like: test-results/test-results-ubuntu-24.04/*.trx
+          for f in test-results/**/*.trx; do
+            envname="$(basename "$(dirname "$f")")"
+            # Fallback if the trx sits directly in test-results/
+            [[ "$envname" == "test-results" ]] && envname="unknown"
+            outdir="ctrf/${envname}"
+            mkdir -p "$outdir"
+            # Produce: ctrf/<env>/ctrf-report.json
+            dotnet tool run DotnetCtrfJsonReporter -p "$f" -d "$outdir" -f "ctrf-report.json"
+            echo "Converted $f -> $outdir/ctrf-report.json"
+            conv=$((conv+1))
+          done
+          echo "Converted $conv TRX file(s) to CTRF"
+
+      - name: Upload CTRF reports (for history & insights)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctrf-reports
+          path: ctrf/**/*.json
+          retention-days: 7
+
+      - name: Publish CTRF Test Report (all features)
+        if: always()
+        uses: ctrf-io/github-test-reporter@v1
+        with:
+          # Pick up every CTRF we just created (one per OS/artifact)
+          report-path: 'ctrf/**/*.json'
+
+          # Post everywhere (job summary, PR comment, a status check)
+          summary: true
+          pull-request: true
+          status-check: true
+          status-check-name: 'CTRF Test Reporter'
+
+          # Turn on (almost) all built-in reports
+          summary-report: true
+          summary-delta-report: true
+          tests-changed-report: true
+          github-report: true
+          test-report: true
+          test-list-report: true
+          failed-report: true
+          failed-folded-report: true
+          skipped-report: true
+          suite-folded-report: true
+          suite-list-report: true
+          file-report: true
+          previous-results-report: true
+          insights-report: true
+          flaky-report: true
+          flaky-rate-report: true
+          fail-rate-report: true
+          slowest-report: true
+
+          # Store processed CTRF for comparisons on future runs
+          upload-artifact: true
+          fetch-previous-results: true
+
+          # Optional: make the order explicit
+          report-order: 'summary-report,summary-delta-report,tests-changed-report,failed-report,failed-folded-report,flaky-report,flaky-rate-report,fail-rate-report,slowest-report,skipped-report,suite-folded-report,suite-list-report,file-report,test-report,test-list-report,previous-results-report,github-report'
+        # env:
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
