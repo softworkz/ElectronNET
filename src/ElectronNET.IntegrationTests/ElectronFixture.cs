@@ -15,6 +15,7 @@ namespace ElectronNET.IntegrationTests
         {
             try
             {
+                Environment.SetEnvironmentVariable("ELECTRON_ENABLE_LOGGING", "1");
                 Console.Error.WriteLine("[ElectronFixture] InitializeAsync: start");
                 AppDomain.CurrentDomain.SetData("ElectronTestAssembly", Assembly.GetExecutingAssembly());
 
