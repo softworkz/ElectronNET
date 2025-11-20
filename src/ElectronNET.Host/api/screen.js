@@ -27,8 +27,13 @@ module.exports = (socket) => {
         electronSocket.emit('screen-getMenuBarWorkArea-completed', height);
     });
     socket.on('screen-getPrimaryDisplay', () => {
-        const display = electron_1.screen.getPrimaryDisplay();
-        electronSocket.emit('screen-getPrimaryDisplay-completed', display);
+        try {
+            const display = electron_1.screen.getPrimaryDisplay();
+            electronSocket.emit('screen-getPrimaryDisplay-completed', display);
+        }
+        catch (e) {
+            console.error("EXCEPTION on getPrimaryDisplay: " + e);
+        }
     });
     socket.on('screen-getAllDisplays', () => {
         const display = electron_1.screen.getAllDisplays();

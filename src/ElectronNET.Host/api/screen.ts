@@ -34,8 +34,12 @@ export = (socket: Socket) => {
     });
 
     socket.on('screen-getPrimaryDisplay', () => {
-        const display = screen.getPrimaryDisplay();
-        electronSocket.emit('screen-getPrimaryDisplay-completed', display);
+        try {
+            const display = screen.getPrimaryDisplay();
+            electronSocket.emit('screen-getPrimaryDisplay-completed', display);
+        } catch (e) {
+            console.error("EXCEPTION on getPrimaryDisplay: " + e);
+        } 
     });
 
     socket.on('screen-getAllDisplays', () => {
